@@ -1,0 +1,10 @@
+Várias caixas em diferentes perspectivas e posições na mesma imagem
+
+
+Dimensões:
+
+Caixa 1 (mm):375x340x220 (Castanha grande)
+Caixa 2 (mm):235x320x155 (Castanha média)
+Caixa 3 (mm):260x215x105 (Castanha pequena)
+Caixa 4 (mm):280x200x170 (Azul)
+Caixa 5 (mm):345x190x85 (Branca)
