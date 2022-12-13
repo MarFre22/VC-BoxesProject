@@ -18,7 +18,7 @@ def ReadPlyPoint(fname):
         [ndarray]: N x 3 point clouds
     """
 
-    pcd = o3d.io.read_point_cloud(fname, remove_infinite_points=True, remove_nan_points=True)
+    pcd = o3d.io.read_point_cloud(fname, remove_nan_points=True, remove_infinite_points=True)
 
     return PCDToNumpy(pcd)
 
@@ -65,7 +65,7 @@ def RemoveNan(points):
     return points[~np.isnan(points[:, 0])]
 
 
-def RemoveNoiseStatistical(pc, nb_neighbors=20, std_ratio=2.0):
+def RemoveNoiseStatistical(pc, nb_neighbors=20, std_ratio=2.0, pcd=False):
     """ remove point clouds noise using statitical noise removal method
 
     Args:
@@ -77,7 +77,9 @@ def RemoveNoiseStatistical(pc, nb_neighbors=20, std_ratio=2.0):
         [ndarray]: N x 3 point clouds
     """
 
-    pcd = NumpyToPCD(pc)
+    if pcd==False:
+        pcd = NumpyToPCD(pc)
+
     cl, ind = pcd.remove_statistical_outlier(
         nb_neighbors=nb_neighbors, std_ratio=std_ratio)
 
@@ -121,10 +123,13 @@ def PlaneRegression(points, threshold=0.01, init_n=3, iter=1000):
     return w, index
 
 
-def DrawResult(points, colors):
+def DrawResult(points, colors=[]):
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(points)
-    pcd.colors = o3d.utility.Vector3dVector(colors)
+
+    if len(colors) != []:
+        pcd.colors = o3d.utility.Vector3dVector(colors)
+
     o3d.visualization.draw_geometries([pcd])
 
 

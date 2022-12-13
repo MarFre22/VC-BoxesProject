@@ -5,14 +5,21 @@ import time
 def main():
     points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
     
+    #Axes =  o3d.geometry.TriangleMesh.create_coordinate_frame(1)
+    #o3d.visualization.draw_geometries([pcd, Axes])
+
+    
     # pre-processing
-    points = RemoveNan(points)
-    points = DownSample(points,voxel_size=0.003)
-    points = RemoveNoiseStatistical(points, nb_neighbors=50, std_ratio=0.5)
+    #points = RemoveNan(points)
+    points = DownSample(points,voxel_size=0.05)
+    points = RemoveNoiseStatistical(points, nb_neighbors=20, std_ratio=0.8)
+
+    DrawResult(points)
+
 
     #DrawPointCloud(points, color=(0.4, 0.4, 0.4))
     t0 = time.time()
-    results = DetectMultiPlanes(points, min_ratio=0.05, threshold=0.005, iterations=2000)
+    results = DetectMultiPlanes(points, min_ratio=0.1, threshold=0.1, iterations=2000)
     print('Time:', time.time() - t0)
     planes = []
     colors = []
