@@ -5,11 +5,11 @@ if __name__ == "__main__":
     import random
     import time
 
-    points = ReadPlyPoint('Data/test1.ply')
+    points = ReadPlyPoint('DataSet/FFonseca/VáriasCaixas/Frame378.ply')
 
     # pre-processing
-    #points = RemoveNan(points)
-    #points = DownSample(points,voxel_size=0.003)
+    points = RemoveNan(points)
+    points = DownSample(points,voxel_size=0.003)
     points = RemoveNoiseStatistical(points, nb_neighbors=50, std_ratio=0.5)
 
     #DrawPointCloud(points, color=(0.4, 0.4, 0.4))
