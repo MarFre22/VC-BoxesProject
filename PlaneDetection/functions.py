@@ -18,7 +18,7 @@ def ReadPlyPoint(fname):
         [ndarray]: N x 3 point clouds
     """
 
-    pcd = o3d.io.read_point_cloud(fname)
+    pcd = o3d.io.read_point_cloud(fname, remove_infinite_points=True, remove_nan_points=True)
 
     return PCDToNumpy(pcd)
 

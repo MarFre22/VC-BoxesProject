@@ -1,12 +1,10 @@
 from functions import *
+import random
+import time
 
-
-if __name__ == "__main__":
-    import random
-    import time
-
-    points = ReadPlyPoint('DataSet/FFonseca/VáriasCaixas/Frame378.ply')
-
+def main():
+    points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
+    
     # pre-processing
     points = RemoveNan(points)
     points = DownSample(points,voxel_size=0.003)
@@ -35,3 +33,10 @@ if __name__ == "__main__":
     planes = np.concatenate(planes, axis=0)
     colors = np.concatenate(colors, axis=0)
     DrawResult(planes, colors)
+
+
+if __name__ == "__main__":
+    main()
+    
+
+    
