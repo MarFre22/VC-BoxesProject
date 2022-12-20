@@ -4,7 +4,8 @@ import time
 import math
 
 def main():
-    points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
+    #points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
+    points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
     
     #Axes =  o3d.geometry.TriangleMesh.create_coordinate_frame(1)
     #o3d.visualization.draw_geometries([pcd, Axes])
