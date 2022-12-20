@@ -31,27 +31,39 @@ def main():
     # Variable to count number of planes
     plane_counter = 0
 
+    # Store the array of plane values
+    plane_values = []
+
     for w, plane in results:
 
         plane_counter = plane_counter + 1
 
-        r = random.random()
-        g = random.random()
-        b = random.random()
+        if plane_counter != 1:
 
-        color = np.zeros((plane.shape[0], plane.shape[1]))
-        color[:, 0] = r
-        color[:, 1] = g
-        color[:, 2] = b
+            r = random.random()
+            g = random.random()
+            b = random.random()
 
-        planes.append(plane)
-        colors.append(color)
+            color = np.zeros((plane.shape[0], plane.shape[1]))
+            color[:, 0] = r
+            color[:, 1] = g
+            color[:, 2] = b
 
-        # Print the plan equation
-        [a, b, c, d] = w
-        print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0")
-        DrawResult(plane, color)
+            planes.append(plane)
+            colors.append(color)
 
+            # Print the plan equation
+            [a, b, c, d] = w
+            print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0")
+            DrawResult(plane, color)
+
+            plane_values.append([a, b, c, d])
+
+
+        else:
+            continue
+
+        ''' 
         # Dictionary for each plane. 
         #Key = distance between; Value = array of the two points
         plane_dic = {}
@@ -76,12 +88,13 @@ def main():
 
         # Add the plane_dic to the dictionary
         dictionary[plane_counter] = plane_dic
-
-
+        '''
+        
     planes = np.concatenate(planes, axis=0)
     colors = np.concatenate(colors, axis=0)
     DrawResult(planes, colors)
 
+    '''
     # Dictionary to get the 4 biggest distances of the plane
     big4Dist_plane_Dic = {}
     # Variable to count number of planes
@@ -104,6 +117,7 @@ def main():
         big4Dist_plane_Dic[plane_counter] = dist_arr[-4:]
         print(dist_arr[-4:])
         print('\n')
+    '''
 
 
 
