@@ -9,27 +9,6 @@ import open3d as o3d
 
 
 
-def plane_intersect(a, b):
-    '''
-    a, b   4-tuples/lists
-           Ax + By +Cz + D = 0
-           A,B,C,D in order  
-
-    output: 2 points on line of intersection, np.arrays, shape (3,)
-    '''
-    a_vec, b_vec = np.array(a[:3]), np.array(b[:3])
-
-    aXb_vec = np.cross(a_vec, b_vec)
-
-    A = np.array([a_vec, b_vec, aXb_vec])
-    d = np.array([-a[3], -b[3], 0.]).reshape(3,1)
-
-    # could add np.linalg.det(A) == 0 test to prevent linalg.solve throwing error
-
-    p_inter = np.linalg.solve(A, d).T
-
-    return p_inter[0], (p_inter + aXb_vec)[0]
-
 
 def ReadPlyPoint(fname):
     """ read points
@@ -182,3 +161,78 @@ def DetectMultiPlanes(points, min_ratio=0.05, threshold=0.01, iterations=1000):
         target = np.delete(target, index, axis=0)
 
     return plane_list
+
+
+def plane_intersect(a, b):
+    '''
+    a, b   4-tuples/lists
+           Ax + By +Cz + D = 0
+           A,B,C,D in order  
+
+    output: 2 points on line of intersection, np.arrays, shape (3,)
+    '''
+    a_vec, b_vec = np.array(a[:3]), np.array(b[:3])
+
+    aXb_vec = np.cross(a_vec, b_vec)
+
+    A = np.array([a_vec, b_vec, aXb_vec])
+    d = np.array([-a[3], -b[3], 0.]).reshape(3,1)
+
+    # could add np.linalg.det(A) == 0 test to prevent linalg.solve throwing error
+
+    p_inter = np.linalg.solve(A, d).T
+
+    return p_inter[0], (p_inter + aXb_vec)[0]
+
+def give_color(a, color_name):
+
+    if color_name == 'r':
+        r = 1
+        g = 0
+        b = 0
+
+    r = random.random()
+    g = random.random()
+    b = random.random()
+
+    color = np.zeros((plane.shape[0], plane.shape[1]))
+    color[:, 0] = r
+    color[:, 1] = g
+    color[:, 2] = b
+
+    colors.append(color)
+
+    return color_array
+
+def boundingBox3D(points):
+
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(points)
+    
+    # Flip it, otherwise the pointcloud will be upside down.
+    #pcd.transform([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]])
+    print(pcd)
+    axis_aligned_bounding_box = pcd.get_axis_aligned_bounding_box()
+    axis_aligned_bounding_box.color = (1, 0, 0)
+    oriented_bounding_box = pcd.get_oriented_bounding_box(robust = True)
+    #oriented_bounding_box = open3d.geometry.OrientedBoundingBox.create_from_points(points)
+    oriented_bounding_box.color = (0, 1, 0)
+
+    oriented_rotation_matrix = oriented_bounding_box.R
+
+    print(oriented_rotation_matrix[0].tolist().append(0.0))
+
+    pcd.transform([oriented_rotation_matrix[0].tolist().append(0), oriented_rotation_matrix[1].tolist().append(0), oriented_rotation_matrix[2].tolist().append(0), [0, 0, 0, 1]])
+
+    #pcd.transform(oriented_rotation_matrix)
+
+    axis_aligned_bounding_box = pcd.get_axis_aligned_bounding_box()
+    axis_aligned_bounding_box.color = (1, 0, 0)
+
+    print(
+        "Displaying axis_aligned_bounding_box in red and oriented bounding box in green ..."
+    )
+    o3d.visualization.draw(
+        [pcd, axis_aligned_bounding_box, oriented_bounding_box])
+
+    return oriented_bounding_box
