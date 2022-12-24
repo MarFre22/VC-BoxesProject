@@ -91,9 +91,49 @@ def main():
         dictionary[plane_counter] = plane_dic
         '''
         
+    #planes = np.concatenate(planes, axis=0)
+    #colors = np.concatenate(colors, axis=0)
+    #DrawResult(planes, colors)
+
+    inter_points = plane_intersect(plane_values[0], plane_values[1])
+
+    inter_point1 = inter_points[0]
+    inter_point2 = inter_points[1]
+    
+
+    dist = math.dist(inter_point1, inter_point2)
+    print(dist)
+
+    
+
+    inter_point1 = np.array([[inter_point1[0], inter_point1[1], inter_point1[2]]])
+    inter_point2 = np.array([[inter_point2[0], inter_point2[1], inter_point2[2]]])
+    #inter_point2.append(0)
+
+
+
+    planes.append(inter_point1)
+    planes.append(inter_point2)
+
+    
+
+    for a in planes:
+        print(a)
+
+    print('\nCOLORS')
+    for a in color:
+        print(a)
+    
+
+    boundingBox3D(planes[0])
+    
     planes = np.concatenate(planes, axis=0)
     colors = np.concatenate(colors, axis=0)
+
+    
     DrawResult(planes, colors)
+
+    #print(point_intersecpt2)
 
     '''
     # Dictionary to get the 4 biggest distances of the plane
