@@ -125,7 +125,7 @@ def main():
         print(a)
     
 
-    boundingBox3D(planes[0])
+    boundingBox3D(planes[0], True)
     
     planes = np.concatenate(planes, axis=0)
     colors = np.concatenate(colors, axis=0)
