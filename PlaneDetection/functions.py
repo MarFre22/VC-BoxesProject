@@ -6,6 +6,7 @@ and we find helpfull
 """
 import numpy as np
 import open3d as o3d
+import math
 
 
 
@@ -204,35 +205,90 @@ def give_color(a, color_name):
 
     return color_array
 
-def boundingBox3D(points):
+def boundingBox3D(points, verbose=False):
+    ''' 
+        Detect the best dimentions of the 3D bounding box to a given points (cloud)
+            Input: points
+            Output: dimentions in array: [float, float, float]
+    '''
 
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(points)
     
     # Flip it, otherwise the pointcloud will be upside down.
     #pcd.transform([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]])
-    print(pcd)
     axis_aligned_bounding_box = pcd.get_axis_aligned_bounding_box()
     axis_aligned_bounding_box.color = (1, 0, 0)
     oriented_bounding_box = pcd.get_oriented_bounding_box(robust = True)
     #oriented_bounding_box = open3d.geometry.OrientedBoundingBox.create_from_points(points)
     oriented_bounding_box.color = (0, 1, 0)
 
-    oriented_rotation_matrix = oriented_bounding_box.R
+    if verbose == True:
+        print(
+            "\nDisplaying the initial axis_aligned_bounding_box in red and oriented bounding box in green ..."
+        )
+        o3d.visualization.draw(
+            [pcd, axis_aligned_bounding_box, oriented_bounding_box])
 
-    print(oriented_rotation_matrix[0].tolist().append(0.0))
 
-    pcd.transform([oriented_rotation_matrix[0].tolist().append(0), oriented_rotation_matrix[1].tolist().append(0), oriented_rotation_matrix[2].tolist().append(0), [0, 0, 0, 1]])
+    # Transpose in order to invert the rotation
+    rotation = np.transpose(oriented_bounding_box.R)
 
-    #pcd.transform(oriented_rotation_matrix)
+    if verbose == True:
+        print('\nTransposed rotation matrix:')
+        print(rotation)
+    
+    pcd_transposed =  pcd.rotate(rotation)
+    axis_aligned_bounding_box_rotated = pcd_transposed.get_axis_aligned_bounding_box()
+    axis_aligned_bounding_box_rotated.color = (1,1,0)
+    
 
-    axis_aligned_bounding_box = pcd.get_axis_aligned_bounding_box()
-    axis_aligned_bounding_box.color = (1, 0, 0)
+    vol_aligned_bounding_box_rotated = axis_aligned_bounding_box_rotated.volume()
+    minimized_vol = 'no'
+    aligned_bounding_box_rotated_final = axis_aligned_bounding_box_rotated
+    dims_final = axis_aligned_bounding_box_rotated.get_extent()
 
-    print(
-        "Displaying axis_aligned_bounding_box in red and oriented bounding box in green ..."
-    )
-    o3d.visualization.draw(
-        [pcd, axis_aligned_bounding_box, oriented_bounding_box])
+    # Minimize volume of Axis aligned bounding Box
+    for angle in np.arange(0, 5, 0.5):
+        
+        if verbose == True:
+            print(angle)
 
-    return oriented_bounding_box
+        pcd_test = pcd_transposed
+
+        angle_rad = angle = math.radians(angle)
+
+        matrix_rot_z = np.array([[math.cos(angle_rad),  -math.sin(angle_rad), 0], 
+                            [math.sin(angle_rad), math.cos(angle_rad), 0], 
+                            [0, 0, 1]])
+        matrix_rot_z =  matrix_rot_z.astype(np.float64)
+
+        aligned_bounding_box_rotated_test = pcd_test.rotate(matrix_rot_z).get_axis_aligned_bounding_box()
+
+        dims = aligned_bounding_box_rotated_test.get_extent()
+
+        vol = aligned_bounding_box_rotated_test.volume()
+
+        if vol <= vol_aligned_bounding_box_rotated:
+            # Save all info
+            dims_final = dims
+            minimized_vol = 'yes'
+            aligned_bounding_box_rotated_final = aligned_bounding_box_rotated_test
+            
+            # Min volume
+            vol_aligned_bounding_box_rotated = vol
+
+        if verbose == True:
+            # Print
+            o3d.visualization.draw(
+                [pcd, aligned_bounding_box_rotated_test, axis_aligned_bounding_box_rotated])
+
+    if verbose == True:
+        print("\nMinimized volume axis aligned bounding box?  "+ minimized_vol)
+        print(dims_final)
+
+        print("\nDisplaying best fit bounding box (White), transposed bounding box (Yellow)")
+        o3d.visualization.draw(
+            [pcd, aligned_bounding_box_rotated_final, axis_aligned_bounding_box_rotated])
+    
+    return dims
