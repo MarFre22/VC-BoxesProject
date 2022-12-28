@@ -249,7 +249,7 @@ def boundingBox3D(points, verbose=False):
     dims_final = axis_aligned_bounding_box_rotated.get_extent()
 
     # Minimize volume of Axis aligned bounding Box
-    for angle in np.arange(0, 5, 0.5):
+    for angle in np.arange(0, 10, 0.5):
         
         if verbose == True:
             print(angle)
@@ -291,4 +291,4 @@ def boundingBox3D(points, verbose=False):
         o3d.visualization.draw(
             [pcd, aligned_bounding_box_rotated_final, axis_aligned_bounding_box_rotated])
     
-    return dims
+    return dims_final
