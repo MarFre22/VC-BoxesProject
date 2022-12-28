@@ -116,18 +116,20 @@ def main():
     #planes.append(inter_point2)
 
     
-
+    '''
     for a in planes:
         print(a)
 
     print('\nCOLORS')
     for a in color:
         print(a)
-    
+    '''
 
-    boundingBox3D(planes[0], True)
+    print('\nPlane 0 dims:')
+    print(boundingBox3D(planes[0], False))
 
-    boundingBox3D(planes[1], True)
+    print('\nPlane 1 dims:')
+    print(boundingBox3D(planes[1], True))
     
     planes = np.concatenate(planes, axis=0)
     colors = np.concatenate(colors, axis=0)
