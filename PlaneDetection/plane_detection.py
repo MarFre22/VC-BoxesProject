@@ -45,7 +45,18 @@ def main(p, c, cb_pcd):
             points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
     else:
         if(c == 0):
-            points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame361.ply')
+            if(cb_pcd == 0):
+                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame355.ply')
+            elif(cb_pcd == 1):
+                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.pcd')
+            elif(cb_pcd == 2):
+                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.ply')
+            elif(cb_pcd == 3):
+                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.pcd')
+            elif(cb_pcd == 4):
+                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.ply')
+            else:
+                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame361.ply')
         else:
             points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
 
@@ -137,9 +148,8 @@ def main(p, c, cb_pcd):
 
     # 2 detected planes
     else:
-
-        # For the first plane (TOP ONE)
-
+        # Find and compare the biggest and smallest side (exclude the depth of bounding box - [2])
+        #   For the first plane (TOP ONE)
         biggest1 = 0
         smallest1 = 0
 
@@ -150,9 +160,7 @@ def main(p, c, cb_pcd):
             biggest1 = plane_dims[0][0]
             smallest1 = plane_dims[0][1]
 
-
-        # For the secound plane (Cascades from TOP ONE)
-
+        #   For the secound plane (Cascades from TOP ONE)
         biggest2 = 0
         smallest2 = 0
 
@@ -213,7 +221,7 @@ if __name__ == "__main__":
     p = 0 -> path do André
     p = 1 -> path do Álvaro
     '''
-    p = 0
+    p = 1
 
     '''
     c = 0 -> caixa branca
