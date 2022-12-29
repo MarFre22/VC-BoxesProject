@@ -3,25 +3,65 @@ import random
 import time
 import math
 
-def main():
-    #points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
-    points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
-    
-    #Axes =  o3d.geometry.TriangleMesh.create_coordinate_frame(1)
-    #o3d.visualization.draw_geometries([pcd, Axes])
+def main(p, c, cb_pcd):
 
+
+    '''
+        É IMPORTANTE REFERIR QUE PARA SER POSSÍVEL OBER
+    A POSIÇÃO DO KINECT PARA OBTER A NUVEM DE PONTOS TEM DE
+    SER CONTANTE, CASO CONTRÁRIO É NECESSÁRIO ESTAR CONSTANTEMENTE
+    A ADAPTAR O ALGORITMO PARA SATISFAZER AS NECESSIDADES DO ANGULO
+    DE OBTENÇÃO.
+
+        O ALGORTIMO ESTÁ CALIBRADO PARA A OBTENÇÃO DE PONTOS
+    CUJO ANGULO DE OBTENÇÃO É COMUM AOS SEGUINTE FICHEIROS:
+
+        CAIXA CASTANHA: Frame368.ply
+
+
+        CAIXA BRANCA:   Frame355.pcd, 
+                        Frame356.pcd,  
+                        Frame356.ply,
+                        Frame359.pcd,
+                        Frame359.ply, (acerta a orientação, mas a PCD é demasiado má para tirar as dimensões)
+    '''
+
+
+    if(p == 0):
+        if(c == 0):
+            if(cb_pcd == 0):
+                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame355.pcd')
+            elif(cb_pcd == 1):
+                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.pcd')
+            elif(cb_pcd == 2):
+                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.ply')
+            elif(cb_pcd == 3):
+                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.pcd')
+            elif(cb_pcd == 4):
+                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.ply')
+            else:
+                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame361.ply')
+        else:
+            points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
+    else:
+        if(c == 0):
+            points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame361.ply')
+        else:
+            points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
+
+    
     
     # pre-processing
     #points = RemoveNan(points)
     points = DownSample(points,voxel_size=0.05)
     points = RemoveNoiseStatistical(points, nb_neighbors=20, std_ratio=0.8)
 
-    #DrawResult(points)
+    DrawResult(points)
 
     t0 = time.time()
     # Got the best parameters to detect all planes
     results = DetectMultiPlanes(points, min_ratio=0.001, threshold=8, iterations=2000)
-    print('Time:', time.time() - t0)
+    print('\nTime to detect all planes:', time.time() - t0, '\n')
     planes = []
     colors = []
 
@@ -64,72 +104,18 @@ def main():
         else:
             continue
 
-        ''' 
-        # Dictionary for each plane. 
-        #Key = distance between; Value = array of the two points
-        plane_dic = {}
 
-        # Ignore the first one wish is the table
-        if(plane_counter == 1):
-            continue
+    plane_dims = []
+    # Run through all planes and apply the bounding box
+    for i in range(len(planes)):
 
-        # Run through every point
-        for i in plane:
-            for j in plane:
+            plane_dim = boundingBox3D(planes[i], False)
+            plane_dims.append(plane_dim)
 
-                # To store the value in the plane_dic
-                point_Arr = []
-                point_Arr.append(i)
-                point_Arr.append(j)
-
-                # Point dist
-                point_dist = math.dist(i, j)
-
-                plane_dic[point_dist] = point_Arr 
-
-        # Add the plane_dic to the dictionary
-        dictionary[plane_counter] = plane_dic
-        '''
-        
-    #planes = np.concatenate(planes, axis=0)
-    #colors = np.concatenate(colors, axis=0)
-    #DrawResult(planes, colors)
-
-    #inter_points = plane_intersect(plane_values[0], plane_values[1])
-
-    #inter_point1 = inter_points[0]
-    #inter_point2 = inter_points[1]
-    
-
-    #dist = math.dist(inter_point1, inter_point2)
-    #print(dist)
-
-    
-
-    #inter_point1 = np.array([[inter_point1[0], inter_point1[1], inter_point1[2]]])
-    #inter_point2 = np.array([[inter_point2[0], inter_point2[1], inter_point2[2]]])
-    #inter_point2.append(0)
+            print('\nPlane',i, 'dims:')
+            print(plane_dim)
 
 
-
-    #planes.append(inter_point1)
-    #planes.append(inter_point2)
-
-    
-    '''
-    for a in planes:
-        print(a)
-
-    print('\nCOLORS')
-    for a in color:
-        print(a)
-    '''
-
-    print('\nPlane 0 dims:')
-    print(boundingBox3D(planes[0], False))
-
-    print('\nPlane 1 dims:')
-    print(boundingBox3D(planes[1], True))
     
     planes = np.concatenate(planes, axis=0)
     colors = np.concatenate(colors, axis=0)
@@ -137,42 +123,117 @@ def main():
     
     DrawResult(planes, colors)
 
-    #print(point_intersecpt2)
 
-    '''
-    # Dictionary to get the 4 biggest distances of the plane
-    big4Dist_plane_Dic = {}
-    # Variable to count number of planes
-    plane_counter = 0
+    # Number of planes
+    n_planes = plane_counter-1
 
-    # Run through all plane dictionarys
-    for key in dictionary:
+    # Final sizes of the box
+    LxWxH = []
 
-        plane_counter = plane_counter + 1
-        dist_arr = []
+    # 3 detected planes
+    if(n_planes == 3):
 
-        # Run throun one plane dicitionary
-        for plane_key in dictionary[key]:
-            dist_arr.append(plane_key)
+        print("Not done yet. Os pontos fornecedos só tem 2 planos detetados.")
 
-        # Get the biggest distances to the end
-        dist_arr.sort()
+    # 2 detected planes
+    else:
 
-        # Get the 4 biggest (4 in last) in to the dictionary
-        big4Dist_plane_Dic[plane_counter] = dist_arr[-4:]
-        print(dist_arr[-4:])
-        print('\n')
-    '''
+        # For the first plane (TOP ONE)
 
+        biggest1 = 0
+        smallest1 = 0
 
+        if(plane_dims[0][0] < plane_dims[0][1]):
+            biggest1 = plane_dims[0][1]
+            smallest1 = plane_dims[0][0]
+        else:
+            biggest1 = plane_dims[0][0]
+            smallest1 = plane_dims[0][1]
 
 
+        # For the secound plane (Cascades from TOP ONE)
 
+        biggest2 = 0
+        smallest2 = 0
+
+        if(plane_dims[1][0] < plane_dims[1][1]):
+            biggest2 = plane_dims[1][1]
+            smallest2 = plane_dims[1][0]
+        else:
+            biggest2 = plane_dims[1][0]
+            smallest2 = plane_dims[1][1]
+
+
+        # Find the comun side
+        diff1 = abs(biggest1 - biggest2)
+        diff2 = abs(smallest1 - smallest2)
+
+        # Box is horizontal because the commun side is the biggest
+        if(diff1 < diff2):
+
+            L = (biggest1 + biggest2) / 2
+            LxWxH.append(round(L))
+            W = smallest1
+            LxWxH.append(round(W))
+            H = smallest2
+            LxWxH.append(round(H))
+
+            print("\nThe box is orientated horizontal.")
+            print("Its dimensions (LxWxH) are:")
+            print(LxWxH)
+        # Box is vertical because the commun side is the smallest 
+        else:
+            '''
+             Lets assum that the plane order extracted maintains.
+             In case it differs, maybe the plane that have more points
+            is detected first
+            '''
+            L = biggest1
+            LxWxH.append(round(L))
+            H = biggest2
+            LxWxH.append(round(H))
+            W = (smallest1 + smallest2) / 2
+            LxWxH.append(round(W))
+
+            print("\nThe box is orientated verticaly.")
+            print("Its dimensions (LxWxH) are:")
+            print(LxWxH)
+
+
+    print('\nReal values CaixaCastanha (LxWxH):')
+    print([320, 155, 235])
+    print('Real values CaixaBranca(LxWxH):')
+    print([340, 193, 85])
 
 
 
 if __name__ == "__main__":
-    main()
+
+    '''
+    p = 0 -> path do André
+    p = 1 -> path do Álvaro
+    '''
+    p = 0
+
+    '''
+    c = 0 -> caixa branca
+    c = 1 -> caixa castanha
+    '''  
+    c = 0
+
+    '''
+        PCD for white box that have the same angle of 
+    extracting the point cloud
+
+    cb_pcd = 0 -> Frame355.pcd
+    cb_pcd = 1 -> Frame356.pcd
+    cb_pcd = 2 -> Frame356.ply
+    cb_pcd = 3 -> Frame359.pcd
+    cb_pcd = 4 -> Frame359.ply
+    cb_pcd = 5 -> Frame361.ply
+    '''
+    cb_pcd = 2
+    main(p, c, cb_pcd)
     
 
     
