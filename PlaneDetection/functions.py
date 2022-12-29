@@ -250,7 +250,7 @@ def boundingBox3D(points, verbose=False):
 
     # Minimize volume of Axis aligned bounding Box
     #for angle in np.arange(0, 10, 0.5):
-    for angle in np.arange(0, 50, 0.5):
+    for angle in np.arange(0, 50, 0.05):
         
         if verbose == True:
             print(angle)
@@ -270,6 +270,12 @@ def boundingBox3D(points, verbose=False):
 
         vol = aligned_bounding_box_rotated_test.volume()
 
+        # If script already found a volume lower than de initial one 
+        if vol_aligned_bounding_box_rotated != axis_aligned_bounding_box_rotated.volume():
+            # If the next vol as increased, stop the loop to make it faster
+            if vol > vol_aligned_bounding_box_rotated:
+                break
+
         if vol <= vol_aligned_bounding_box_rotated:
             # Save all info
             dims_final = dims
@@ -278,6 +284,8 @@ def boundingBox3D(points, verbose=False):
             
             # Min volume
             vol_aligned_bounding_box_rotated = vol
+        
+        
 
         if (verbose == True):
             # Print
