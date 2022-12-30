@@ -9,8 +9,6 @@ import open3d as o3d
 import math
 
 
-
-
 def ReadPlyPoint(fname):
     """ read points
 
@@ -24,6 +22,8 @@ def ReadPlyPoint(fname):
     pcd = o3d.io.read_point_cloud(fname, remove_nan_points=True, remove_infinite_points=True)
 
     return PCDToNumpy(pcd)
+
+
 
 
 def NumpyToPCD(xyz):
@@ -40,6 +40,20 @@ def NumpyToPCD(xyz):
     pcd.points = o3d.utility.Vector3dVector(xyz)
 
     return pcd
+
+def ReadPlyPoint(fname):
+    """ read points
+
+    Args:
+        fname (str): path point cloud file
+
+    Returns:
+        [ndarray]: N x 3 point clouds
+    """
+
+    pcd = o3d.io.read_point_cloud(fname, remove_nan_points=True, remove_infinite_points=True)
+
+    return PCDToNumpy(pcd)
 
 
 def PCDToNumpy(pcd):
@@ -103,7 +117,6 @@ def DownSample(pts, voxel_size=0.003):
     p = NumpyToPCD(pts).voxel_down_sample(voxel_size=voxel_size)
 
     return PCDToNumpy(p)
-
 
 def PlaneRegression(points, threshold=0.01, init_n=3, iter=1000):
     """ plane regression using ransac
