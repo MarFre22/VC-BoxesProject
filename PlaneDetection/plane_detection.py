@@ -3,6 +3,8 @@ import random
 import time
 import math
 
+#from ClusterDetection import *
+
 def main(p, c, cb_pcd):
 
 
@@ -57,15 +59,17 @@ def main(p, c, cb_pcd):
                 points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.ply')
             else:
                 points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame361.ply')
-        else:
+        elif (c == 1):
             points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
+        elif (c == 2):
+            points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/VáriasCaixas/Frame371.ply')
 
     
     
     # pre-processing
     #points = RemoveNan(points)
     points = DownSample(points,voxel_size=0.05)
-    points = RemoveNoiseStatistical(points, nb_neighbors=20, std_ratio=0.8)
+    points = RemoveNoiseStatistical(points, nb_neighbors=10, std_ratio=0.8)
 
     DrawResult(points)
 
@@ -90,6 +94,7 @@ def main(p, c, cb_pcd):
 
         plane_counter = plane_counter + 1
 
+        # Ignore ground plane
         if plane_counter != 1:
 
             r = random.random()
@@ -142,9 +147,9 @@ def main(p, c, cb_pcd):
     LxWxH = []
 
     # 3 detected planes
-    if(n_planes == 3):
+    if(n_planes != 2):
 
-        print("Not done yet. Os pontos fornecedos só tem 2 planos detetados.")
+        print("Not done yet. Os pontos fornecedostêm mais que 2 planos detetados.")
 
     # 2 detected planes
     else:
@@ -226,8 +231,9 @@ if __name__ == "__main__":
     '''
     c = 0 -> caixa branca
     c = 1 -> caixa castanha
+    c = 2 -> varias caixas
     '''  
-    c = 0
+    c = 2
 
     '''
         PCD for white box that have the same angle of 
