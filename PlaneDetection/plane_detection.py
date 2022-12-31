@@ -32,93 +32,101 @@ def main(p, c, cb_pcd):
     if(p == 0):
         if(c == 0):
             if(cb_pcd == 0):
-                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame355.pcd')
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame355.pcd'
             elif(cb_pcd == 1):
-                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.pcd')
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.pcd'
             elif(cb_pcd == 2):
-                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.ply')
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.ply'
             elif(cb_pcd == 3):
-                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.pcd')
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.pcd'
             elif(cb_pcd == 4):
-                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.ply')
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.ply'
             else:
-                points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame361.ply')
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame361.ply'
         else:
-            points = ReadPlyPoint('/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
+            path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply'
     else:
         if(c == 0):
             if(cb_pcd == 0):
-                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame355.ply')
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame355.ply'
             elif(cb_pcd == 1):
-                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.pcd')
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.pcd'
             elif(cb_pcd == 2):
-                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.ply')
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.ply'
             elif(cb_pcd == 3):
-                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.pcd')
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.pcd'
             elif(cb_pcd == 4):
-                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.ply')
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.ply'
             else:
-                points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame361.ply')
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame361.ply'
         elif (c == 1):
-            points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply')
+            path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply'
         elif (c == 2):
-            points = ReadPlyPoint('/Users/marfre/VC-BoxesProject/DataSet/FFonseca/VáriasCaixas/Frame371.ply')
+            path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/VáriasCaixas/Frame371.ply'
 
     
     
     # pre-processing
-    #points = RemoveNan(points)
-    points = DownSample(points,voxel_size=0.05)
-    points = RemoveNoiseStatistical(points, nb_neighbors=10, std_ratio=0.8)
+    if(c == 2):
+        planes = clusterDetection(path, verbose=True)
 
-    DrawResult(points)
+        print(planes)
+        
+    
+    else:
+        points = ReadPlyPoint(path)
+        #points = RemoveNan(points)
+        points = DownSample(points,voxel_size=0.05)
+        points = RemoveNoiseStatistical(points, nb_neighbors=10, std_ratio=0.8)
 
-    t0 = time.time()
-    # Got the best parameters to detect all planes
-    results = DetectMultiPlanes(points, min_ratio=0.001, threshold=8, iterations=2000)
-    print('\nTime to detect all planes:', time.time() - t0, '\n')
-    planes = []
-    colors = []
+        DrawResult(points)
 
-    # Array to store a dictionary for every plane
-    # The key in a integer; the value is a dictionary
-    dictionary = {}
+        t0 = time.time()
+        # Got the best parameters to detect all planes
+        results = DetectMultiPlanes(points, min_ratio=0.001, threshold=8, iterations=2000)
+        print('\nTime to detect all planes:', time.time() - t0, '\n')
+        planes = []
+        colors = []
 
-    # Variable to count number of planes
-    plane_counter = 0
+        # Array to store a dictionary for every plane
+        # The key in a integer; the value is a dictionary
+        dictionary = {}
 
-    # Store the array of plane values
-    plane_values = []
+        # Variable to count number of planes
+        plane_counter = 0
 
-    for w, plane in results:
+        # Store the array of plane values
+        plane_values = []
 
-        plane_counter = plane_counter + 1
+        for w, plane in results:
 
-        # Ignore ground plane
-        if plane_counter != 1:
+            plane_counter = plane_counter + 1
 
-            r = random.random()
-            g = random.random()
-            b = random.random()
+            # Ignore ground plane
+            if plane_counter != 1:
 
-            color = np.zeros((plane.shape[0], plane.shape[1]))
-            color[:, 0] = r
-            color[:, 1] = g
-            color[:, 2] = b
+                r = random.random()
+                g = random.random()
+                b = random.random()
 
-            planes.append(plane)
-            colors.append(color)
+                color = np.zeros((plane.shape[0], plane.shape[1]))
+                color[:, 0] = r
+                color[:, 1] = g
+                color[:, 2] = b
 
-            # Print the plan equation
-            [a, b, c, d] = w
-            print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0")
-            DrawResult(plane, color)
+                planes.append(plane)
+                colors.append(color)
 
-            plane_values.append([a, b, c, d])
+                # Print the plan equation
+                [a, b, c, d] = w
+                print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0")
+                DrawResult(plane, color)
+
+                plane_values.append([a, b, c, d])
 
 
-        else:
-            continue
+            else:
+                continue
 
 
     plane_dims = []
