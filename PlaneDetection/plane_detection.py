@@ -221,7 +221,7 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
                     diff_small = abs(i[1] - j[1])
 
                     # Check if it i vertical or horizontal
-                    # Horizontal if bigger side have the less difference
+                    # bigger side have the less difference
                     if(diff_big < diff_small):
 
                         # Check if this side is a candidate
@@ -251,11 +251,20 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
                                         H = j[1]
                                         LxWxH.append(round(H))
 
-                                        print("\nThe box is orientated Horizontaly.")
-                                        print("Its dimensions (LxWxH) are:")
-                                        print(LxWxH)
-                                        print("Represents box with Reference sizes: ", bd[3])
-                                        print("The plane used are: ", i_idx, " and ", j_idx)
+                                        if(W < H):
+
+                                            print("\nThe box is orientated Verticaly.")
+                                            print("Its dimensions (LxWxH) are:")
+                                            print(LxWxH)
+                                            print("Represents box with Reference sizes: ", bd[3])
+                                            print("The plane used are: ", i_idx, " and ", j_idx)
+                                        else:
+                                            print("\nThe box is orientated Horizontaly.")
+                                            print("Its dimensions (LxWxH) are:")
+                                            print(LxWxH)
+                                            print("Represents box with Reference sizes: ", bd[3])
+                                            print("The plane used are: ", i_idx, " and ", j_idx)
+
 
                                         # Lets see the planes that were chosen
                                         p = []
@@ -296,11 +305,19 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
                                         H = j[0]
                                         LxWxH.append(round(H))
 
-                                        print("\nThe box is orientated Verticaly.")
-                                        print("Its dimensions (LxWxH) are:")
-                                        print(LxWxH)
-                                        print("Represents box with Reference sizes: ", bd[3])
-                                        print("The plane used are: ", i_idx, " and ", j_idx)
+                                        if(L < H):
+
+                                            print("\nThe box is orientated Verticaly.")
+                                            print("Its dimensions (LxWxH) are:")
+                                            print(LxWxH)
+                                            print("Represents box with Reference sizes: ", bd[3])
+                                            print("The plane used are: ", i_idx, " and ", j_idx)
+                                        else:
+                                            print("\nThe box is orientated Horizontaly.")
+                                            print("Its dimensions (LxWxH) are:")
+                                            print(LxWxH)
+                                            print("Represents box with Reference sizes: ", bd[3])
+                                            print("The plane used are: ", i_idx, " and ", j_idx)
 
                                         # Lets see the planes that were chosen
                                         p = []
@@ -399,7 +416,8 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
         # 3 detected planes
         if(n_planes != 2):
 
-            print("A better point cloud is needed.")
+            print("\nA better point cloud is needed or more then 2 planes were detected or a better calibration is needed.")
+            exit()
 
         # 2 detected planes
         else:
@@ -431,7 +449,7 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
             diff1 = abs(biggest1 - biggest2)
             diff2 = abs(smallest1 - smallest2)
 
-            # Box is horizontal because the commun side is the biggest
+            # commun side is the biggest
             if(diff1 < diff2):
 
                 L = (biggest1 + biggest2) / 2
@@ -441,10 +459,17 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
                 H = smallest2
                 LxWxH.append(round(H))
 
-                print("\nThe box is orientated horizontal.")
-                print("Its dimensions (LxWxH) are:")
-                print(LxWxH)
-            # Box is vertical because the commun side is the smallest 
+                if(W < H):
+
+                    print("\nThe box is orientated Verticaly.")
+                    print("Its dimensions (LxWxH) are:")
+                    print(LxWxH)
+                else:
+                    print("\nThe box is orientated Horizontaly.")
+                    print("Its dimensions (LxWxH) are:")
+                    print(LxWxH)
+
+            # commun side is the smallest 
             else:
                 '''
                  Lets assum that the plane order extracted maintains.
@@ -453,14 +478,20 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
                 '''
                 L = biggest1
                 LxWxH.append(round(L))
-                H = biggest2
-                LxWxH.append(round(H))
                 W = (smallest1 + smallest2) / 2
                 LxWxH.append(round(W))
+                H = biggest2
+                LxWxH.append(round(H))
 
-                print("\nThe box is orientated verticaly.")
-                print("Its dimensions (LxWxH) are:")
-                print(LxWxH)
+                if(L < H):
+
+                    print("\nThe box is orientated Verticaly.")
+                    print("Its dimensions (LxWxH) are:")
+                    print(LxWxH)
+                else:
+                    print("\nThe box is orientated Horizontaly.")
+                    print("Its dimensions (LxWxH) are:")
+                    print(LxWxH)
 
 
         print('\nReal values CaixaCastanha (LxWxH):')
@@ -483,20 +514,20 @@ if __name__ == "__main__":
     c = 1 -> caixa castanha
     c = 2 -> varias caixas
     '''  
-    c = 1
+    c = 2
 
     '''
         PCD for brown box that have the same angle of 
     extracting the point cloud
 
-    cb_pcd = 0 -> Frame362.pcd (estima bem as dimensões e a orientação)
-    cb_pcd = 1 -> Frame364.ply (estima bem as dimensões e a orientação)
-    cb_pcd = 2 -> Frame365.ply (Point cloud não dá)
-    cb_pcd = 3 -> Frame366.ply (Point cloud não dá)
-    cb_pcd = 4 -> Frame367.ply (Point cloud não dá)
-    cb_pcd = 5 -> Frame368.ply (estima bem as dimensoes, mas mal a orientação)
+    cc_pcd = 0 -> Frame362.pcd (estima bem as dimensões e a orientação)
+    cc_pcd = 1 -> Frame364.ply (Point cloud não dá para o nosso algoritmo as vezes. Quando dá estima bem as dimensões e a orientação)
+    cc_pcd = 2 -> Frame365.ply (Point cloud não dá)
+    cc_pcd = 3 -> Frame366.ply (Point cloud não dá)
+    cc_pcd = 4 -> Frame367.ply (Point cloud não dá)
+    cc_pcd = 5 -> Frame368.ply (estima bem as dimensões e a orientação)
     '''
-    cc_pcd = 5
+    cc_pcd = 0
 
     '''
         PCD for white box that have the same angle of 
@@ -505,10 +536,10 @@ if __name__ == "__main__":
     cb_pcd = 0 -> Frame355.pcd (estima bem as dimensões e a orientação)
     cb_pcd = 1 -> Frame356.pcd (estima bem as dimensões e a orientação)
     cb_pcd = 2 -> Frame356.ply (estima bem as dimensões e a orientação)
-    cb_pcd = 3 -> Frame357.ply (estima mal as dimensões e a orientação)
-    cb_pcd = 4 -> Frame358.pcd (estima mal as dimensões e a orientação)
-    cb_pcd = 5 -> Frame359.pcd (estima bem as dimensões e a orientação)
-    cb_pcd = 6 -> Frame359.ply (estima bem as dimensões e a orientação)
+    cb_pcd = 3 -> Frame357.ply (estima bem as dimensões e a orientação)
+    cb_pcd = 4 -> Frame358.pcd (estima mal as dimensões, mas bem a orientação)
+    cb_pcd = 5 -> Frame359.pcd (estima bem as dimensões, mas mal a orientação)
+    cb_pcd = 6 -> Frame359.ply (Point cloud não dá)
     cb_pcd = 7 -> Frame360.pcd (estima bem as dimensoes, mas mal a orientação)
     cb_pcd = 8 -> Frame361.ply (estima bem as dimensoes, mas mal a orientação)
     '''
@@ -517,14 +548,14 @@ if __name__ == "__main__":
     '''
         PCD for multiple boxes
 
-    cb_pcd = 0 -> Frame371.ply
-    cb_pcd = 1 -> Frame372.ply
-    cb_pcd = 2 -> Frame373.ply
-    cb_pcd = 3 -> Frame374.ply
-    cb_pcd = 4 -> Frame377.ply
-    cb_pcd = 5 -> Frame378.ply
+    mc_pcd = 0 -> Frame371.ply
+    mc_pcd = 1 -> Frame372.ply
+    mc_pcd = 2 -> Frame373.ply
+    mc_pcd = 3 -> Frame374.ply
+    mc_pcd = 4 -> Frame377.ply
+    mc_pcd = 5 -> Frame378.ply
     '''
-    mc_pcd = 5
+    mc_pcd = 0
 
     main(p, c, cc_pcd, cb_pcd, mc_pcd)
     
