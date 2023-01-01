@@ -5,7 +5,7 @@ import math
 
 from ClusterDetection import *
 
-def main(p, c, cb_pcd, mc_pcd):
+def main(p, c, cc_pcd, cb_pcd, mc_pcd):
 
 
     '''
@@ -38,13 +38,32 @@ def main(p, c, cb_pcd, mc_pcd):
             elif(cb_pcd == 2):
                 path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.ply'
             elif(cb_pcd == 3):
-                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.pcd'
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame357.ply'
             elif(cb_pcd == 4):
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame358.pcd'
+            elif(cb_pcd == 5):
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.pcd'
+            elif(cb_pcd == 6):
                 path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.ply'
+            elif(cb_pcd == 7):
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame360.pcd'
             else:
                 path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame361.ply'
+
         elif (c == 1):
-            path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply'
+            if(cc_pcd == 0):
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame362.pcd'
+            elif(cc_pcd == 1):
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame364.ply'
+            elif(cc_pcd == 2):
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame365.ply'
+            elif(cc_pcd == 3):
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame366.ply'
+            elif(cc_pcd == 4):
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame367.ply'
+            else:
+                path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply'
+
         else:
             if(mc_pcd == 0):
                 path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/VáriasCaixas/Frame371.ply'
@@ -58,23 +77,42 @@ def main(p, c, cb_pcd, mc_pcd):
                 path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/VáriasCaixas/Frame377.ply'
             else:
                 path = '/home/andre/Desktop/4º ANO/VC/Projeto/VC-BoxesProject/DataSet/FFonseca/VáriasCaixas/Frame378.ply'
-
+#'/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame355.ply'
     else:
         if(c == 0):
             if(cb_pcd == 0):
-                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame355.ply'
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame355.pcd'
             elif(cb_pcd == 1):
                 path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.pcd'
             elif(cb_pcd == 2):
                 path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame356.ply'
             elif(cb_pcd == 3):
-                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.pcd'
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame357.ply'
             elif(cb_pcd == 4):
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame358.pcd'
+            elif(cb_pcd == 5):
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.pcd'
+            elif(cb_pcd == 6):
                 path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame359.ply'
+            elif(cb_pcd == 7):
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame360.pcd'
             else:
                 path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaBranca/Frame361.ply'
+
         elif (c == 1):
-            path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply'
+            if(cc_pcd == 0):
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame362.pcd'
+            elif(cc_pcd == 1):
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame364.ply'
+            elif(cc_pcd == 2):
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame365.ply'
+            elif(cc_pcd == 3):
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame366.ply'
+            elif(cc_pcd == 4):
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame367.ply'
+            else:
+                path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/CaixaCastanha/Frame368.ply'
+
         else:
             if(mc_pcd == 0):
                 path = '/Users/marfre/VC-BoxesProject/DataSet/FFonseca/VáriasCaixas/Frame371.ply'
@@ -361,7 +399,7 @@ def main(p, c, cb_pcd, mc_pcd):
         # 3 detected planes
         if(n_planes != 2):
 
-            print("Not done yet. Os pontos fornecedostêm mais que 2 planos detetados.")
+            print("A better point cloud is needed.")
 
         # 2 detected planes
         else:
@@ -426,7 +464,7 @@ def main(p, c, cb_pcd, mc_pcd):
 
 
         print('\nReal values CaixaCastanha (LxWxH):')
-        print([320, 155, 235])
+        print([320, 235, 155])
         print('Real values CaixaBranca(LxWxH):')
         print([340, 193, 85])
 
@@ -445,24 +483,39 @@ if __name__ == "__main__":
     c = 1 -> caixa castanha
     c = 2 -> varias caixas
     '''  
-    c = 2
+    c = 1
+
+    '''
+        PCD for brown box that have the same angle of 
+    extracting the point cloud
+
+    cb_pcd = 0 -> Frame362.pcd (estima bem as dimensões e a orientação)
+    cb_pcd = 1 -> Frame364.ply (estima bem as dimensões e a orientação)
+    cb_pcd = 2 -> Frame365.ply (Point cloud não dá)
+    cb_pcd = 3 -> Frame366.ply (Point cloud não dá)
+    cb_pcd = 4 -> Frame367.ply (Point cloud não dá)
+    cb_pcd = 5 -> Frame368.ply (estima bem as dimensoes, mas mal a orientação)
+    '''
+    cc_pcd = 5
 
     '''
         PCD for white box that have the same angle of 
     extracting the point cloud
 
-    cb_pcd = 0 -> Frame355.pcd
-    cb_pcd = 1 -> Frame356.pcd
-    cb_pcd = 2 -> Frame356.ply
-    cb_pcd = 3 -> Frame359.pcd
-    cb_pcd = 4 -> Frame359.ply
-    cb_pcd = 5 -> Frame361.ply
+    cb_pcd = 0 -> Frame355.pcd (estima bem as dimensões e a orientação)
+    cb_pcd = 1 -> Frame356.pcd (estima bem as dimensões e a orientação)
+    cb_pcd = 2 -> Frame356.ply (estima bem as dimensões e a orientação)
+    cb_pcd = 3 -> Frame357.ply (estima mal as dimensões e a orientação)
+    cb_pcd = 4 -> Frame358.pcd (estima mal as dimensões e a orientação)
+    cb_pcd = 5 -> Frame359.pcd (estima bem as dimensões e a orientação)
+    cb_pcd = 6 -> Frame359.ply (estima bem as dimensões e a orientação)
+    cb_pcd = 7 -> Frame360.pcd (estima bem as dimensoes, mas mal a orientação)
+    cb_pcd = 8 -> Frame361.ply (estima bem as dimensoes, mas mal a orientação)
     '''
-    cb_pcd = 2
+    cb_pcd = 0
 
     '''
-        PCD for white box that have the same angle of 
-    extracting the point cloud
+        PCD for multiple boxes
 
     cb_pcd = 0 -> Frame371.ply
     cb_pcd = 1 -> Frame372.ply
@@ -471,9 +524,9 @@ if __name__ == "__main__":
     cb_pcd = 4 -> Frame377.ply
     cb_pcd = 5 -> Frame378.ply
     '''
-    mc_pcd = 1
+    mc_pcd = 5
 
-    main(p, c, cb_pcd, mc_pcd)
+    main(p, c, cc_pcd, cb_pcd, mc_pcd)
     
 
     
