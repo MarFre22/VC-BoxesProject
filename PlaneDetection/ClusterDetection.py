@@ -27,6 +27,8 @@ def clusterDetection(path, verbose=False):
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(points)
 
+    DrawResult(pcd.points)
+
     '''
     # [Optional] Normals computation
     pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=16), fast_normal_computation=True)
