@@ -133,7 +133,7 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
     if(c == 2):
 
         # Has the plane coordinates
-        planes_points = clusterDetection(path, verbose=False)
+        planes_points = clusterDetection(path, verbose=True)
 
         # Variable to count number of planes
         plane_counter = 0
@@ -392,7 +392,7 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
         # Run through all planes and apply the bounding box
         for i in range(len(planes)):
 
-                plane_dim = boundingBox3D(planes[i], False)
+                plane_dim = boundingBox3D(planes[i], True)
                 plane_dims.append(plane_dim)
 
                 print('\nPlane',i, 'dims:')
@@ -543,7 +543,7 @@ if __name__ == "__main__":
     cb_pcd = 7 -> Frame360.pcd (estima bem as dimensoes, mas mal a orientação)
     cb_pcd = 8 -> Frame361.ply (estima bem as dimensoes, mas mal a orientação)
     '''
-    cb_pcd = 0
+    cb_pcd = 7
 
     '''
         PCD for multiple boxes

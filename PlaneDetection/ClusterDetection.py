@@ -60,8 +60,8 @@ def clusterDetection(path, verbose=False):
             continue
         
         best_candidate=best_candidate_test
-        if (verbose == True):
-            print("the best candidate is: ", best_candidate)
+        #if (verbose == True):
+            #print("the best candidate is: ", best_candidate)
 
         rest = rest.select_by_index(inliers, invert=True)+segments[i].select_by_index(list(np.where(labels!=best_candidate)[0]))
         segments[i]=segments[i].select_by_index(list(np.where(labels==best_candidate)[0]))
