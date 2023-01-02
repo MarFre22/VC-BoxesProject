@@ -183,11 +183,11 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
 
         # Vector with boxes dimisions
         boxes_diminsions = []
-        boxes_diminsions.append([375, 340, 220, 0])
-        boxes_diminsions.append([320, 235, 155, 1])
-        boxes_diminsions.append([260, 215, 105, 2])
-        boxes_diminsions.append([280, 200, 170, 3])
-        boxes_diminsions.append([345, 190, 85, 4])
+        boxes_diminsions.append([375, 340, 220, 0, 28050000])
+        boxes_diminsions.append([320, 235, 155, 1, 11656000])
+        boxes_diminsions.append([260, 215, 105, 2, 5869500])
+        boxes_diminsions.append([280, 200, 170, 3, 9520000])
+        boxes_diminsions.append([345, 190, 85, 4, 5571750])
         print("\n Reference boxes dimisions:")
         for i in range(len(boxes_diminsions)):
 
@@ -251,18 +251,23 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
                                         H = j[1]
                                         LxWxH.append(round(H))
 
+                                        vol = L*W*H
+                                        vol_err = 1 - (vol / bd[4])
+
                                         if(W < H):
 
                                             print("\nThe box is orientated Verticaly.")
                                             print("Its dimensions (LxWxH) are:")
                                             print(LxWxH)
                                             print("Represents box with Reference sizes: ", bd[3])
+                                            print("The percentage of erro in volume is: ", vol_err ,"%.")
                                             print("The plane used are: ", i_idx, " and ", j_idx)
                                         else:
                                             print("\nThe box is orientated Horizontaly.")
                                             print("Its dimensions (LxWxH) are:")
                                             print(LxWxH)
                                             print("Represents box with Reference sizes: ", bd[3])
+                                            print("The percentage of erro in volume is: ", vol_err ,"%.")
                                             print("The plane used are: ", i_idx, " and ", j_idx)
 
 
@@ -305,18 +310,23 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
                                         H = j[0]
                                         LxWxH.append(round(H))
 
+                                        vol = L*W*H
+                                        vol_err = 1 - (vol / bd[4])
+
                                         if(L < H):
 
                                             print("\nThe box is orientated Verticaly.")
                                             print("Its dimensions (LxWxH) are:")
                                             print(LxWxH)
                                             print("Represents box with Reference sizes: ", bd[3])
+                                            print("The percentage of erro in volume is: ", vol_err ,"%.")
                                             print("The plane used are: ", i_idx, " and ", j_idx)
                                         else:
                                             print("\nThe box is orientated Horizontaly.")
                                             print("Its dimensions (LxWxH) are:")
                                             print(LxWxH)
                                             print("Represents box with Reference sizes: ", bd[3])
+                                            print("The percentage of erro in volume is: ", vol_err ,"%.")
                                             print("The plane used are: ", i_idx, " and ", j_idx)
 
                                         # Lets see the planes that were chosen
@@ -331,7 +341,185 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
 
 
 ################################################################################
+    # Caixa castanha
+
+    elif(c == 1):
+        points = ReadPlyPoint(path)
+        #points = RemoveNan(points)
+        points = DownSample(points,voxel_size=0.05)
+        points = RemoveNoiseStatistical(points, nb_neighbors=10, std_ratio=0.8)
         
+        DrawResult(points)
+
+        t0 = time.time()
+        # Got the best parameters to detect all planes
+        results = DetectMultiPlanes(points, min_ratio=0.001, threshold=8, iterations=2000)
+        print('\nTime to detect all planes:', time.time() - t0, '\n')
+        planes = []
+        colors = []
+
+        # Array to store a dictionary for every plane
+        # The key in a integer; the value is a dictionary
+        #dictionary = {}
+
+        # Variable to count number of planes
+        plane_counter = 0
+
+        # Store the array of plane values
+        plane_values = []
+
+        for w, plane in results:
+
+            plane_counter = plane_counter + 1
+
+            # Ignore ground plane
+            if plane_counter != 1:
+
+                r = random.random()
+                g = random.random()
+                b = random.random()
+
+                color = np.zeros((plane.shape[0], plane.shape[1]))
+                color[:, 0] = r
+                color[:, 1] = g
+                color[:, 2] = b
+
+                planes.append(plane)
+                colors.append(color)
+
+                # Print the plan equation
+                [a, b, c, d] = w
+                print(f"Plane equation: {a:.2f}x + {b:.2f}y + {c:.2f}z + {d:.2f} = 0")
+                DrawResult(plane, color)
+
+                plane_values.append([a, b, c, d])
+
+
+            else:
+                continue
+
+
+        plane_dims = []
+        # Run through all planes and apply the bounding box
+        for i in range(len(planes)):
+
+                plane_dim = boundingBox3D(planes[i], True)
+                plane_dims.append(plane_dim)
+
+                print('\nPlane',i, 'dims:')
+                print(plane_dim)
+
+
+        
+        planes = np.concatenate(planes, axis=0)
+        colors = np.concatenate(colors, axis=0)
+
+        
+        DrawResult(planes, colors)
+
+
+        # Number of planes
+        n_planes = plane_counter-1
+
+        # Final sizes of the box
+        LxWxH = []
+
+        # 3 detected planes
+        if(n_planes != 2):
+
+            print("\nA better point cloud is needed or more then 2 planes were detected or a better calibration is needed.")
+            exit()
+
+        # 2 detected planes
+        else:
+            # Find and compare the biggest and smallest side (exclude the depth of bounding box - [2])
+            #   For the first plane (TOP ONE)
+            biggest1 = 0
+            smallest1 = 0
+
+            if(plane_dims[0][0] < plane_dims[0][1]):
+                biggest1 = plane_dims[0][1]
+                smallest1 = plane_dims[0][0]
+            else:
+                biggest1 = plane_dims[0][0]
+                smallest1 = plane_dims[0][1]
+
+            #   For the secound plane (Cascades from TOP ONE)
+            biggest2 = 0
+            smallest2 = 0
+
+            if(plane_dims[1][0] < plane_dims[1][1]):
+                biggest2 = plane_dims[1][1]
+                smallest2 = plane_dims[1][0]
+            else:
+                biggest2 = plane_dims[1][0]
+                smallest2 = plane_dims[1][1]
+
+
+            # Find the comun side
+            diff1 = abs(biggest1 - biggest2)
+            diff2 = abs(smallest1 - smallest2)
+
+            # commun side is the biggest
+            if(diff1 < diff2):
+
+                L = (biggest1 + biggest2) / 2
+                LxWxH.append(round(L))
+                W = smallest1
+                LxWxH.append(round(W))
+                H = smallest2
+                LxWxH.append(round(H))
+
+                vol = L*W*H
+                vol_err = 1 - (vol / 11656000)
+
+                if(W < H):
+
+                    print("\nThe box is orientated Verticaly.")
+                    print("Its dimensions (LxWxH) are:")
+                    print(LxWxH)
+                    print("The percentage of erro in volume is: ", vol_err ,"%.")
+                else:
+                    print("\nThe box is orientated Horizontaly.")
+                    print("Its dimensions (LxWxH) are:")
+                    print(LxWxH)
+                    print("The percentage of erro in volume is: ", vol_err ,"%.")
+
+            # commun side is the smallest 
+            else:
+                '''
+                 Lets assum that the plane order extracted maintains.
+                 In case it differs, maybe the plane that have more points
+                is detected first
+                '''
+                L = biggest1
+                LxWxH.append(round(L))
+                W = (smallest1 + smallest2) / 2
+                LxWxH.append(round(W))
+                H = biggest2
+                LxWxH.append(round(H))
+
+                vol = L*W*H
+                vol_err = 1 - (vol / 11656000)
+
+                if(L < H):
+
+                    print("\nThe box is orientated Verticaly.")
+                    print("Its dimensions (LxWxH) are:")
+                    print(LxWxH)
+                    print("The percentage of erro in volume is: ", vol_err ,"%.")
+                else:
+                    print("\nThe box is orientated Horizontaly.")
+                    print("Its dimensions (LxWxH) are:")
+                    print(LxWxH)
+                    print("The percentage of erro in volume is: ", vol_err ,"%.")
+
+
+        print('\nReal values CaixaCastanha (LxWxH):')
+        print([320, 235, 155])
+
+################################################################################
+    # Caixa Branca
     else:
         points = ReadPlyPoint(path)
         #points = RemoveNan(points)
@@ -459,15 +647,20 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
                 H = smallest2
                 LxWxH.append(round(H))
 
+                vol = L*W*H
+                vol_err = 1 - (vol / 5577700)
+
                 if(W < H):
 
                     print("\nThe box is orientated Verticaly.")
                     print("Its dimensions (LxWxH) are:")
                     print(LxWxH)
+                    print("The percentage of erro in volume is: ", vol_err ,"%.")
                 else:
                     print("\nThe box is orientated Horizontaly.")
                     print("Its dimensions (LxWxH) are:")
                     print(LxWxH)
+                    print("The percentage of erro in volume is: ", vol_err ,"%.")
 
             # commun side is the smallest 
             else:
@@ -483,19 +676,21 @@ def main(p, c, cc_pcd, cb_pcd, mc_pcd):
                 H = biggest2
                 LxWxH.append(round(H))
 
+                vol = L*W*H
+                vol_err = 1 - (vol / 5577700)
+
                 if(L < H):
 
                     print("\nThe box is orientated Verticaly.")
                     print("Its dimensions (LxWxH) are:")
                     print(LxWxH)
+                    print("The percentage of erro in volume is: ", vol_err ,"%.")
                 else:
                     print("\nThe box is orientated Horizontaly.")
                     print("Its dimensions (LxWxH) are:")
                     print(LxWxH)
+                    print("The percentage of erro in volume is: ", vol_err ,"%.")
 
-
-        print('\nReal values CaixaCastanha (LxWxH):')
-        print([320, 235, 155])
         print('Real values CaixaBranca(LxWxH):')
         print([340, 193, 85])
 
@@ -514,7 +709,7 @@ if __name__ == "__main__":
     c = 1 -> caixa castanha
     c = 2 -> varias caixas
     '''  
-    c = 2
+    c = 0
 
     '''
         PCD for brown box that have the same angle of 
@@ -543,7 +738,7 @@ if __name__ == "__main__":
     cb_pcd = 7 -> Frame360.pcd (estima bem as dimensoes, mas mal a orientação)
     cb_pcd = 8 -> Frame361.ply (estima bem as dimensoes, mas mal a orientação)
     '''
-    cb_pcd = 7
+    cb_pcd = 0
 
     '''
         PCD for multiple boxes
